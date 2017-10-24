@@ -8,6 +8,7 @@ from datetime import datetime, date
 from os import getenv, listdir, stat
 from stat import S_ISDIR
 
+from itertools import chain
 from pandas import tslib as td
 
 import pandas as pd
@@ -221,7 +222,7 @@ class pvDataSet(object):
     def special_days(self):
         return self.daily.merge(self.special_dates, on=["date"])
 
-    def fetch(self, selection):
+    def _fetch(self, selection):
         if selection == "total":
             return self.daily
 
@@ -233,4 +234,10 @@ class pvDataSet(object):
         return df.loc[df["date"] == td.parse_datetime_string(selection)]
 
     def __getitem__(self, key):
-        return self.fetch(key)
+        return self._fetch(key)
+
+    def keys(self):
+        return chain(
+            (_x for _x, _ in self._special_labels),
+            self.daily["dates"],
+        )

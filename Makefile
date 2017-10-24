@@ -12,4 +12,4 @@ env:
 	virtualenv --system-site-packages $@
 
 clean:
-	-@rm -rf env
+	-@rm -rf env dist build

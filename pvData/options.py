@@ -1,14 +1,12 @@
 #==============================================================================
 #                               Local Imports
 #==============================================================================
-from .constants import PACKAGE_NAME, LOGGING_LEVELS
+from .constants import PACKAGE_NAME, LOGGING_LEVELS, DEFAULT_DATASET
 
 #==============================================================================
 #                               Global Imports
 #==============================================================================
 from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
-
-import pkg_resources
 
 #==============================================================================
 #                         Command line option handling
@@ -23,7 +21,7 @@ def register_options(option_parser=None):
 
     option_parser.add_argument(
         "--data-folder",
-        default=pkg_resources.resource_filename(PACKAGE_NAME, "dataset"),
+        default=DEFAULT_DATASET,
         help="The pv data folder"
     )
 

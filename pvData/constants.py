@@ -3,6 +3,7 @@
 #==============================================================================
 from os import getenv
 
+import pkg_resources
 import logging
 
 #==============================================================================
@@ -23,8 +24,16 @@ PACKAGE_NAME = 'pvData'
 #==============================================================================
 #                                  Files / Folders
 #==============================================================================
-DEFAULT_FOLDER=getenv("DATADIR")
+PACKAGE_DATASET_VARIABLE = "PVDATA_DATASET"
 
+DEFAULT_DATASET = getenv(
+    PACKAGE_DATASET_VARIABLE,
+    pkg_resources.resource_filename(PACKAGE_NAME, "dataset"),
+)
+
+#==============================================================================
+#                                    Enumerations
+#==============================================================================
 class FileTypes(object):
     Consumption = "XBSYS.LOAD.P.csv"
     Generation = "XBSYS.PV.P.csv"

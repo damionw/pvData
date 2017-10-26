@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 
-from .constants import DEFAULT_FOLDER, FileTypes
+from .constants import DEFAULT_DATASET, FileTypes
 from .decorators import cast, cached
 
 from os.path import exists, join
@@ -9,6 +9,7 @@ from os import getenv, listdir, stat
 from stat import S_ISDIR
 
 from itertools import chain
+
 from pandas import tslib as td
 
 import pandas as pd
@@ -19,7 +20,7 @@ import re
 MAX_WATTS=500000
 
 class pvDataSet(object):
-    def __init__(self, folder=DEFAULT_FOLDER):
+    def __init__(self, folder=DEFAULT_DATASET):
         self._folder = folder
         self._epoch = datetime.utcfromtimestamp(0)
 
@@ -63,7 +64,8 @@ class pvDataSet(object):
 
         return pd.DataFrame(
             [
-                [_label, td.parse_datetime_string(_date)]
+                [_label, pd.to_datetime(_date)]
+#                [_label, td.parse_datetime_string(_date)]
                 for _label, _date
                 in self._special_labels + extra_labels
             ],
@@ -90,22 +92,22 @@ class pvDataSet(object):
         df = pd.read_csv(
             filename,
             parse_dates=False,
-            # date_parser=lambda _val: pd.to_datetime(_val, unit='s', errors="coerce",),
             names=["timestamp", "value"],
-            # index_col=["timestamp"],
-            # keep_date_col=True,
             header=None,
         )
 
         first_date = datetime.utcfromtimestamp(df["timestamp"][0]).date()
-    
-        # __import__("code").interact(local=dict(globals().items() + locals().items()))
 
+        # Presume that the dataset is only for one day
+        df["date"] = pd.Timestamp(first_date)
+
+        # Append an entry with one second earlier than the first known entry and 0 watts
         df.loc[-1, ["timestamp", "value"]] = [
             int(df["timestamp"][0] - 1),
             0.0
         ]
 
+        # Append an entry for the last second of the day and 0 watts
         df.loc[-2, ["timestamp", "value"]] = [
             int((datetime(first_date.year, first_date.month, first_date.day) - self._epoch).total_seconds()),
             0.0
@@ -142,6 +144,8 @@ class pvDataSet(object):
         return df
 
     def _read_all(self, filetype, limit=None):
+        """ Read entire series of filetype
+        """
         return reduce(
             lambda _df, _newdf: _df.append(_newdf), (
                 self._read_dataset(filename=_file, limit=limit)
@@ -166,10 +170,13 @@ class pvDataSet(object):
         return self._read_all(FileTypes.Battery)
 
     @property
+    @cached
     def full(self):
+        """ Merge all full length series into single dataset
+        """
         def merge(_df, _newdf):
             return _df.merge(
-                _newdf,
+                _newdf.ix[:, _newdf.columns.difference(["date"])],
                 how="outer",
                 on=["timestamp"],
                 left_index=True,
@@ -184,7 +191,6 @@ class pvDataSet(object):
             )
         )
 
-        df["date"] = df["timestamp"].apply(lambda _x: td.Timestamp(td.datetime_date(_x.year, _x.month, _x.day)))
         df["delta_time"] = df["timestamp"].diff(periods=1) / np.timedelta64(1, 's')
 
         for _label, _ in self._specs:
@@ -231,7 +237,7 @@ class pvDataSet(object):
         for _date in self.special_dates[self.special_dates["name"] == selection]["date"]:
             return df.loc[df["date"] == _date]
 
-        return df.loc[df["date"] == td.parse_datetime_string(selection)]
+        return df.loc[df["date"] == pd.to_datetime(selection)]
 
     def __getitem__(self, key):
         return self._fetch(key)

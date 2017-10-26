@@ -18,7 +18,7 @@ import code
 LOG = logging.getLogger(__name__)
 
 #==============================================================================
-#                                  Entry Point
+#                                  Entry Points
 #==============================================================================
 def main():
     option_parser = register_options()

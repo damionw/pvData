@@ -18,7 +18,7 @@ setup: env
 
 env:
 	virtualenv --system-site-packages $@
-	@(. env/bin/activate; pip install --upgrade bokeh==0.9.0)
+	@(. env/bin/activate; pip install --upgrade bokeh==0.9.0 IPython==3.0.0)
 
 clean:
 	-@rm -rf env dist build *.egg-info

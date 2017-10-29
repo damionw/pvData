@@ -229,7 +229,7 @@ class pvDataSet(object):
         return self.daily.merge(self.special_dates, on=["date"])
 
     def _fetch(self, selection):
-        if selection == "total":
+        if selection in ("total", "daily"):
             return self.daily
 
         df = self.full
@@ -246,4 +246,21 @@ class pvDataSet(object):
         return chain(
             (_x for _x, _ in self._special_labels),
             self.daily["dates"],
+        )
+
+    @staticmethod
+    def graphed(df, suffix=""):
+        targets = ["consumption", "generation"]
+
+        sources = [
+            "{}{}{}".format(_label, "_" if len(suffix) else "", suffix) for _label in targets
+        ]
+
+        extra_keys = list(df.keys().intersection(["timestamp", "date", "delta_time"]))
+
+        all_keys = extra_keys + sources
+
+        return df[all_keys].rename(
+            index=str,
+            columns=dict(zip(sources, targets)),
         )

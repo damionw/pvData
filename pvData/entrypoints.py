@@ -29,6 +29,8 @@ def main():
         folder=arguments.data_folder,
     )
 
+    df = dataset.full
+
     code.interact(local=dict(globals().items() + locals().items()))
 
 #==============================================================================

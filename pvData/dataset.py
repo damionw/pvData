@@ -245,7 +245,7 @@ class pvDataSet(object):
     def keys(self):
         return chain(
             (_x for _x, _ in self._special_labels),
-            self.daily["dates"],
+            self.daily["date"],
         )
 
     @staticmethod

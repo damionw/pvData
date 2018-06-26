@@ -5,7 +5,6 @@ import sys
 sys.path[:0] = ["./"]
 
 from pvData import PACKAGE_NAME
-
 from setuptools import setup
 
 setup(
@@ -32,6 +31,7 @@ setup(
     entry_points = {
         'console_scripts': [
             "pv_console = {}.entrypoints:main".format(PACKAGE_NAME),
+            "pv_data = {}.entrypoints:pvdata".format(PACKAGE_NAME),
         ]
     },
 )

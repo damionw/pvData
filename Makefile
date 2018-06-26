@@ -8,7 +8,7 @@ help:
 all: env setup
 
 install:
-	@pip install --upgrade bokeh==0.9.0 IPython==3.0.0 jsonschema
+	@pip install bokeh==0.9.0 IPython==3.0.0 jsonschema
 	@python setup.py install
 
 virtualenv: env

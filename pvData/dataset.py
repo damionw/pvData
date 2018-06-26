@@ -51,6 +51,22 @@ class pvDataSet(object):
             ("2018 autumn equinox", "2017-09-22"),
             ("2018 winter solstice", "2017-12-21"),
         ]
+    @property
+    def folder(self):
+        return self._folder
+
+    def sync(self, folder):
+        from subprocess import call
+
+        parameters=[
+            "rsync",
+            "-az",
+            # "--delete",
+            "{}/".format(folder),
+            "{}/".format(self._folder),
+        ]
+
+        call(parameters)
 
     @property
     @cached

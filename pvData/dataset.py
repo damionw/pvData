@@ -10,8 +10,6 @@ from stat import S_ISDIR
 
 from itertools import chain
 
-from pandas import tslib as td
-
 import pandas as pd
 import numpy as np
 import logging
@@ -139,7 +137,7 @@ class pvDataSet(object):
                 )
 
                 break
-            except OverflowError, _exception:
+            except OverflowError as _exception:
                 pass
 
             logging.warning("Correcting timestamp error in %s", filename)

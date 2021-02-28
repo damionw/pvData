@@ -10,9 +10,10 @@ import logging
 #                                Logging constants
 #==============================================================================
 LOGGING_LEVELS = {
-    _name.lower(): logging._levelNames[_name]
-    for _name
-    in logging._levelNames
+    _name.lower(): _lookup[_name]
+    for _attrname in ["_levelNames", "_levelToName"]
+    for _lookup in [getattr(logging, _attrname, None)] if _lookup is not None 
+    for _name in _lookup.keys()
     if type(_name) != type(0)
 }
 

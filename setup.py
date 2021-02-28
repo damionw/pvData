@@ -9,7 +9,7 @@ from setuptools import setup
 
 setup(
     name=PACKAGE_NAME,
-    version='0.1',
+    version='0.2',
     description="Python PV Data Tools",
     author='Damion K. Wilson',
     include_package_data=True,

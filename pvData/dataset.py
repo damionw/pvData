@@ -191,7 +191,7 @@ class pvDataSet(object):
         """
         def merge(_df, _newdf):
             return _df.merge(
-                _newdf.iloc[:, _newdf.columns.difference(["date"])],
+                _newdf.loc[:, _newdf.columns.difference(["date"])],
                 how="outer",
                 on=["timestamp"],
                 left_index=True,

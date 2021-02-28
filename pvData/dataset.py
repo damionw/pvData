@@ -10,6 +10,7 @@ from stat import S_ISDIR
 
 from itertools import chain
 
+from functools import reduce
 import pandas as pd
 import numpy as np
 import logging
